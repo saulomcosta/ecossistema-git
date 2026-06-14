@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Resiliência | Guia de Cabeceira</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Fira+Code:wght@300;500&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --git-orange: #f05032;
+            --neon-blue: #00d4ff;
+            --dark-bg: #0d1117;
+            --card-bg: #161b22;
+            --border-color: #30363d;
+            --text-main: #c9d1d9;
+            --text-bright: #ffffff;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            scroll-padding-top: 80px;
+        }
+
+        h1, h2, h3, .navbar-brand {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .navbar {
+            background-color: rgba(13, 17, 23, 0.95) !important;
+            border-bottom: 2px solid var(--git-orange);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-link {
+            color: var(--text-main) !important;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--git-orange) !important;
+            text-shadow: 0 0 10px var(--git-orange);
+        }
+
+        .hero-section {
+            padding: 100px 0 60px;
+            background: radial-gradient(circle at top right, rgba(240, 80, 50, 0.1), transparent);
+            text-align: center;
+        }
+
+        .git-logo {
+            width: 80px;
+            filter: drop-shadow(0 0 15px var(--git-orange));
+            margin-bottom: 20px;
+        }
+
+        .accordion-item {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            margin-bottom: 15px;
+            border-radius: 8px !important;
+            overflow: hidden;
+        }
+
+        .accordion-button {
+            background-color: var(--card-bg);
+            color: var(--neon-blue);
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            border: none;
+        }
+
+        .accordion-button:not(.collapsed) {
+            background-color: rgba(0, 212, 255, 0.1);
+            color: var(--neon-blue);
+            box-shadow: none;
+        }
+
+        .accordion-button::after {
+            filter: invert(1);
+        }
+
+        .accordion-body {
+            border-top: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .panic-room {
+            border: 2px solid #ff4d4d;
+            box-shadow: 0 0 20px rgba(255, 77, 77, 0.2);
+        }
+
+        .panic-room .accordion-button {
+            color: #ff4d4d;
+        }
+
+        code, pre {
+            font-family: 'Fira Code', monospace;
+            background-color: #010409;
+            color: #7ee787;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        pre {
+            padding: 15px;
+            display: block;
+            overflow-x: auto;
+        }
+
+        .status-badge {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 0.9rem;
+            color: #8b949e;
+        }
+
+        .mermaid {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .command-table {
+            font-size: 0.85rem;
+        }
+
+        .command-table th {
+            color: var(--neon-blue);
+            border-color: var(--border-color);
+        }
+
+        .command-table td {
+            border-color: var(--border-color);
+        }
+
+        .btn-git {
+            background-color: var(--git-orange);
+            color: white;
+            font-weight: bold;
+            border: none;
+        }
+
+        .btn-git:hover {
+            background-color: #d13e25;
+            color: white;
+            box-shadow: 0 0 15px var(--git-orange);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fab fa-git-alt me-2"></i>Git Resiliência</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#arquitetura">Arquitetura</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#padroes">Padrões</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#panic">S.O.S</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#esteira">Esteira</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#comandos">Comandos</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <div class="container">
+            <img src="https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png" alt="Git Logo" class="git-logo">
+            <h1 class="display-4 fw-bold">Guia de Cabeceira</h1>
+            <p class="lead">Manual de Sobrevivência para Ecossistemas de Alta Criticidade</p>
+            <div class="d-flex justify-content-center gap-3">
+                <span class="badge bg-dark border border-secondary p-2">v1.0.0</span>
+                <span class="badge bg-dark border border-secondary p-2">CI/CD Driven</span>
+                <span class="badge bg-dark border border-secondary p-2">Zero Panic Policy</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container my-5">
+
+        <!-- Seção Arquitetura -->
+        <section id="arquitetura" class="mb-5">
+            <h2 class="mb-4 text-info"><i class="fas fa-sitemap me-2"></i>Arquitetura de Branches</h2>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover border-secondary">
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Prefixo</th>
+                            <th>Origem</th>
+                            <th>Destino</th>
+                            <th>Finalidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="status-badge bg-primary">Feature</span></td>
+                            <td><code>feat/</code></td>
+                            <td>develop</td>
+                            <td>develop</td>
+                            <td>Novas funcionalidades isoladas.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="status-badge bg-warning text-dark">Fix</span></td>
+                            <td><code>fix/</code></td>
+                            <td>develop</td>
+                            <td>develop</td>
+                            <td>Correção de bugs em desenvolvimento.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="status-badge bg-success">Release</span></td>
+                            <td><code>release-</code></td>
+                            <td>develop</td>
+                            <td>master/dev</td>
+                            <td>Homologação, QA e UAT.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="status-badge bg-danger">Hotfix</span></td>
+                            <td><code>hotfix/</code></td>
+                            <td>master</td>
+                            <td>master/dev</td>
+                            <td>Correção crítica em Produção.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Seção Padrões (Accordions) -->
+        <section id="padroes" class="mb-5">
+            <h2 class="mb-4 text-info"><i class="fas fa-code me-2"></i>Semântica e Commits</h2>
+            <div class="accordion" id="accordionPadroes">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCommits">
+                            1. CONVENTIONAL COMMITS & SEMVER
+                        </button>
+                    </h2>
+                    <div id="collapseCommits" class="accordion-collapse collapse" data-bs-parent="#accordionPadroes">
+                        <div class="accordion-body">
+                            <p>Padrão: <code>tipo(escopo): descrição</code></p>
+                            <ul>
+                                <li><strong>feat:</strong> Nova funcionalidade (Gera MINOR)</li>
+                                <li><strong>fix:</strong> Correção de bug (Gera PATCH)</li>
+                                <li><strong>feat(api)!:</strong> Mudança Quebrante (Gera MAJOR)</li>
+                            </ul>
+                            <pre>git commit -m "fix(auth): corrige expiração do JWT (Ref: Card #442)"</pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRelease">
+                            2. CICLO DE RELEASE (HOMOLOGAÇÃO)
+                        </button>
+                    </h2>
+                    <div id="collapseRelease" class="accordion-collapse collapse" data-bs-parent="#accordionPadroes">
+                        <div class="accordion-body">
+                            <p>A <strong>Release</strong> é o "Code Freeze".</p>
+                            <ul>
+                                <li><strong>QA:</strong> Validação técnica (Bugs).</li>
+                                <li><strong>UAT:</strong> Validação de negócio (PO).</li>
+                                <li><strong>Back-merge:</strong> Obrigatório após merge na master.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção Panic Room (SOS) -->
+        <section id="panic" class="mb-5">
+            <h2 class="mb-4 text-danger"><i class="fas fa-biohazard me-2"></i>S.O.S - Panic Room</h2>
+            <div class="alert alert-danger bg-dark border-danger text-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i> <strong>SITUAÇÃO DE CRISE:</strong> Mantenha a calma. Analise o impacto antes de agir.
+            </div>
+            <div class="accordion panic-room" id="accordionPanic">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panic1">
+                            ERRO EM PRODUÇÃO (REVERT SELETIVO)
+                        </button>
+                    </h2>
+                    <div id="panic1" class="accordion-collapse collapse" data-bs-parent="#accordionPanic">
+                        <div class="accordion-body">
+                            <p>Cenário: 1 PR entre 5 quebrou o sistema. Não dê rollback total!</p>
+                            <code>git log --merges --oneline</code><br>
+                            <code>git revert -m 1 &lt;HASH_DO_PR&gt;</code><br>
+                            <code>git push origin master --tags</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panic2">
+                            INCLUSÃO URGENTE NA RELEASE (CHERRY-PICK)
+                        </button>
+                    </h2>
+                    <div id="panic2" class="accordion-collapse collapse" data-bs-parent="#accordionPanic">
+                        <div class="accordion-body">
+                            <p>Cenário: Precisa de 1 feature da develop na release atual sem levar o resto.</p>
+                            <code>git switch release-X.Y.Z</code><br>
+                            <code>git cherry-pick &lt;HASH_DO_COMMIT&gt;</code><br>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panic3">
+                            REMOÇÃO TOTAL (REVERT EM CASCATA)
+                        </button>
+                    </h2>
+                    <div id="panic3" class="accordion-collapse collapse" data-bs-parent="#accordionPanic">
+                        <div class="accordion-body">
+                            <p>Cenário: A feature e seus fix/hotfix precisam sumir.</p>
+                            <p>Regra LIFO: Reverte do mais novo para o mais antigo.</p>
+                            <code>git revert -m 1 &lt;HOTFIX&gt;</code><br>
+                            <code>git revert -m 1 &lt;FIX&gt;</code><br>
+                            <code>git revert -m 1 &lt;FEATURE&gt;</code><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção Esteira -->
+        <section id="esteira" class="mb-5">
+            <h2 class="mb-4 text-info"><i class="fas fa-microchip me-2"></i>Esteira de Governança</h2>
+            <div class="mermaid">
+                flowchart LR
+                A[PR] --> B(Build)
+                B --> C(Sonar)
+                C --> D(Security)
+                D --> E{Quality Gate}
+                E -->|Fail| F(Ajuste)
+                E -->|Pass| G(GMUD)
+                G --> H(UAT)
+                H --> I(Deploy PROD)
+            </div>
+        </section>
+
+        <!-- Seção Comandos -->
+        <section id="comandos" class="mb-5">
+            <h2 class="mb-4 text-info"><i class="fas fa-terminal me-2"></i>Dicionário de Comandos</h2>
+            <div class="card bg-dark border-secondary">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-sm command-table">
+                            <thead>
+                                <tr>
+                                    <th>Comando</th>
+                                    <th>Para que serve?</th>
+                                    <th>Por que usar?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>git fetch origin</code></td>
+                                    <td>Atualiza referências</td>
+                                    <td>Ver o que mudou sem alterar seu código.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>git switch -c branch</code></td>
+                                    <td>Cria/Troca branch</td>
+                                    <td>Comando moderno, mais seguro que checkout.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>git stash push -m "msg"</code></td>
+                                    <td>Salva progresso temporário</td>
+                                    <td>Trocar de contexto rápido para um hotfix.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>git bisect</code></td>
+                                    <td>Busca binária de bugs</td>
+                                    <td>Achar exatamente qual commit quebrou o sistema.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>git log --oneline --graph</code></td>
+                                    <td>Visão da árvore</td>
+                                    <td>Entender onde estão os forks e merges.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>git show v1.0.0</code></td>
+                                    <td>Audita Tag</td>
+                                    <td>Ver quem criou e o conteúdo da versão.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção Linha do Tempo Visual -->
+        <section class="mb-5">
+            <h2 class="mb-4 text-info"><i class="fas fa-history me-2"></i>Fluxograma do Workshop</h2>
+            <div class="mermaid">
+                %%{init: { 'gitGraph': {'mainBranchName': 'master'}}}%%
+                gitGraph
+                commit id: "v0.0.1"
+                branch develop
+                checkout develop
+                commit id: "fix/03-pagamento"
+                commit id: "chore/01-jacoco"
+                branch release-0.0.2
+                checkout release-0.0.2
+                commit id: "fix: QA"
+                checkout master
+                merge release-0.0.2 id: "v0.0.2" tag: "v0.0.2"
+                checkout develop
+                merge release-0.0.2
+                checkout master
+                branch hotfix-revert-jacoco
+                checkout hotfix-revert-jacoco
+                commit id: "REVERT JACOCO"
+                checkout master
+                merge hotfix-revert-jacoco tag: "v0.0.3"
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p class="mb-3"><i class="fas fa-shield-alt text-success me-2"></i>Ambiente Seguro e Protegido</p>
+            <p class="text-secondary">Este guia é a sua bússola. Em caso de desastre, respire, tome um café e siga o processo. Sua sanidade mental agradece.</p>
+            <hr class="border-secondary my-4">
+            <p class="fw-bold text-light">Assinado: <strong>Saulo Costa</strong> </p>
+            <p class="small">"Menos café por sobrevivência, mais café por prazer. Boas prosas e código limpo."</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        mermaid.initialize({
+            theme: 'dark',
+            startOnLoad: true,
+            securityLevel: 'loose'
+        });
+    </script>
+</body>
+</html>

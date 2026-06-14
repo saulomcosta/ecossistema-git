@@ -1,4 +1,4 @@
-# Workshop: Resiliência no Ecossistema GitHub Enterprise
+# Guia de Cabeceira: Resiliência no Ecossistema GitHub Enterprise
 
 ## 1. Introdução e Objetivos Éticos
 Este guia foi desenhado para arquitetos e desenvolvedores que operam em ambientes de alta criticidade. O foco não é apenas o "caminho feliz", mas como o Git nos salva em situações de estresse sob pressão de entrega.
@@ -17,17 +17,13 @@ Antes de aprofundarmos no Git, precisamos entender os portões de qualidade que 
 ### Fluxograma de Governança
 
 ```mermaid
-flowchart TD
-    A[PR na Develop] --> B{Validação Técnica}
-    B -->|Build/Sonar| C[Vulnerability Analysis]
-    C --> D[DefectDojo / Registro]
-    D --> E{Quality Gate}
-    E -->|Reprovado| F[Correção pelo Dev]
-    E -->|Aprovado| G[Gestão de Mudança - GMUD]
-    G --> H[Aprovação Tech/Negócio]
-    H --> I[Deploy em Homologação]
-    I --> J[Smoke Tests]
-    J --> K[Release Candidate Aprovada]
+flowchart LR
+    A([PR Develop]) --> B{Quality Gates}
+    B -->|Reprovado| F[Correção Dev]
+    B -->|Aprovado| G[GMUD/Audit]
+    G --> H[Aprovação]
+    H --> I[UAT / Smoke]
+    I --> K([Release OK])
 ```
 
 **Pontos Críticos de Validação:**

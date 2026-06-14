@@ -1,412 +1,994 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Git Resiliência | Guia de Cabeceira</title>
+    <title>Git Resiliência - Workshop</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Fira+Code:wght@300;500&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Orbitron:wght@500;700&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
     <style>
         :root {
-            --git-orange: #f05032;
-            --neon-blue: #00d4ff;
-            --dark-bg: #0d1117;
-            --card-bg: #161b22;
-            --border-color: #30363d;
-            --text-main: #c9d1d9;
+            --bg-deep: hsl(218, 12%, 41%);
+            --bg-card: rgba(66, 95, 142, 0.9);
+            --text-main: #e2e8f0;
             --text-bright: #ffffff;
+            --accent-color: #f05032;
+            --neon-blue: #58a6ff;
+            --border-glow: rgba(11, 17, 24, 0.2);
         }
 
         body {
-            background-color: var(--dark-bg);
+            background-color: var(--bg-deep);
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(240, 80, 50, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(88, 166, 255, 0.05) 0%, transparent 20%);
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            scroll-padding-top: 80px;
+            line-height: 1.5;
+            background-attachment: fixed;
         }
 
-        h1, h2, h3, .navbar-brand {
+        .glass-nav {
+            background: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-glow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header.hero {
+            border-bottom: 2px solid var(--accent-color);
+            padding: 80px 0 40px;
+            background: linear-gradient(180deg, rgba(240, 80, 50, 0.1) 0%, transparent 100%);
+        }
+
+        h1,
+        h2,
+        .tech-font {
             font-family: 'Orbitron', sans-serif;
-            text-transform: uppercase;
             letter-spacing: 2px;
         }
 
-        .navbar {
-            background-color: rgba(13, 17, 23, 0.95) !important;
-            border-bottom: 2px solid var(--git-orange);
-            backdrop-filter: blur(10px);
+        h1 {
+            color: var(--text-bright);
+            text-shadow: 0 0 15px rgba(240, 80, 50, 0.4);
         }
 
-        .nav-link {
-            color: var(--text-main) !important;
+        h2 {
+            border-left: 4px solid var(--neon-blue);
+            padding-left: 15px;
+            margin-top: 40px;
+            margin-bottom: 25px;
+            color: var(--neon-blue);
             font-weight: 600;
-            transition: 0.3s;
+            font-size: 1.5rem;
+            text-transform: uppercase;
         }
 
-        .nav-link:hover {
-            color: var(--git-orange) !important;
-            text-shadow: 0 0 10px var(--git-orange);
+        h3 {
+            font-size: 1.25rem;
+            margin-top: 25px;
+            color: var(--text-bright);
+            border-bottom: 1px solid var(--border-glow);
+            display: inline-block;
+            padding-bottom: 5px;
         }
 
-        .hero-section {
-            padding: 100px 0 60px;
-            background: radial-gradient(circle at top right, rgba(240, 80, 50, 0.1), transparent);
-            text-align: center;
-        }
-
-        .git-logo {
-            width: 80px;
-            filter: drop-shadow(0 0 15px var(--git-orange));
-            margin-bottom: 20px;
-        }
-
-        .accordion-item {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            margin-bottom: 15px;
-            border-radius: 8px !important;
-            overflow: hidden;
-        }
-
-        .accordion-button {
-            background-color: var(--card-bg);
-            color: var(--neon-blue);
-            font-weight: 700;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.9rem;
-            border: none;
-        }
-
-        .accordion-button:not(.collapsed) {
-            background-color: rgba(0, 212, 255, 0.1);
-            color: var(--neon-blue);
-            box-shadow: none;
-        }
-
-        .accordion-button::after {
-            filter: invert(1);
-        }
-
-        .accordion-body {
-            border-top: 1px solid var(--border-color);
-            color: var(--text-main);
-        }
-
-        .panic-room {
-            border: 2px solid #ff4d4d;
-            box-shadow: 0 0 20px rgba(255, 77, 77, 0.2);
-        }
-
-        .panic-room .accordion-button {
-            color: #ff4d4d;
-        }
-
-        code, pre {
+        code {
             font-family: 'Fira Code', monospace;
-            background-color: #010409;
+            background-color: #000;
             color: #7ee787;
-            padding: 2px 6px;
+            padding: 0.2rem 0.4rem;
             border-radius: 4px;
         }
 
         pre {
-            padding: 15px;
-            display: block;
-            overflow-x: auto;
-        }
-
-        .status-badge {
-            font-size: 0.7rem;
-            padding: 3px 8px;
-            border-radius: 10px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .footer {
-            padding: 40px 0;
-            border-top: 1px solid var(--border-color);
-            text-align: center;
+            background-color: #0f172a;
+            border: 1px solid var(--border-glow);
+            padding: 20px;
+            border-radius: 6px;
+            font-family: 'Fira Code', monospace;
             font-size: 0.9rem;
-            color: #8b949e;
+            color: #e6edf3;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .table {
+            color: var(--text-main);
+            border: 1px solid var(--border-glow);
+        }
+
+        .table thead {
+            background-color: #161b22;
+            color: var(--neon-blue);
+        }
+
+        .table-sm td {
+            border-color: var(--border-glow);
         }
 
         .mermaid {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
+            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.12);
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+            text-align: center;
+            border: 1px solid var(--border-glow);
+            border: 1px solid rgba(88, 166, 255, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
-        .command-table {
-            font-size: 0.85rem;
+        /* Ajuste de contraste para os Hints (Tooltips) do Mermaid */
+        .mermaidTooltip {
+            background-color: #0d6efd !important;
+            color: #ffffff !important;
+            border: 1px solid #58a6ff !important;
+            padding: 10px 15px !important;
+            border-radius: 8px !important;
+            font-family: 'Inter', sans-serif !important;
+            font-size: 0.9rem !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+            pointer-events: none !important;
         }
 
-        .command-table th {
-            color: var(--neon-blue);
-            border-color: var(--border-color);
+        .scenario-card {
+            border-left: 5px solid var(--accent-color);
+            background: var(--bg-card);
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 0 12px 12px 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .command-table td {
-            border-color: var(--border-color);
+        .scenario-card:hover {
+            transform: translateX(10px);
+            box-shadow: -5px 0 20px rgba(240, 80, 50, 0.2);
         }
 
-        .btn-git {
-            background-color: var(--git-orange);
+        blockquote {
+            border-left: 4px solid var(--accent-color);
+            background: rgba(240, 80, 50, 0.05);
+            color: var(--text-main);
+            padding: 15px 25px;
+            margin-top: 20px;
+            border-radius: 4px;
+            font-style: italic;
+        }
+
+        .btn-futuristic {
+            background: var(--accent-color);
             color: white;
-            font-weight: bold;
             border: none;
+            padding: 10px 25px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+            transition: 0.3s;
         }
 
-        .btn-git:hover {
-            background-color: #d13e25;
-            color: white;
-            box-shadow: 0 0 15px var(--git-orange);
+        .btn-futuristic:hover {
+            background: #ff6a4d;
+            filter: brightness(1.2);
+            transform: scale(1.05);
+        }
+
+        @media print {
+            .no-print {
+                display: none;
+            }
+
+            body {
+                font-size: 11pt;
+                background: white;
+                color: black;
+            }
+
+            .mermaid {
+                page-break-inside: avoid;
+            }
+
+            h2 {
+                page-break-before: always;
+                color: black;
+                border: none;
+            }
+
+            pre {
+                background: #f0f0f0;
+                color: black;
+                border: 1px solid #ccc;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-deep);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 10px;
         }
     </style>
 </head>
-<body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="#"><i class="fab fa-git-alt me-2"></i>Git Resiliência</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#arquitetura">Arquitetura</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#padroes">Padrões</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#panic">S.O.S</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#esteira">Esteira</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#comandos">Comandos</a></li>
-                </ul>
+<body>
+    <nav class="glass-nav py-3 no-print">
+        <div class="container d-flex justify-content-between align-items-center">
+            <span class="tech-font text-white"><i class="fab fa-github me-2"></i>RE-ECOSYSTEM</span>
+            <div class="d-none d-md-block">
+                <a href="#introducao" class="text-decoration-none text-muted mx-3 small tech-font">INTRO</a>
+                <a href="#arquitetura" class="text-decoration-none text-muted mx-3 small tech-font">BRANCHES</a>
+                <a href="#crise" class="text-decoration-none text-muted mx-3 small tech-font">CRISIS</a>
             </div>
         </div>
     </nav>
 
-    <header class="hero-section">
+    <header class="hero text-center">
         <div class="container">
-            <img src="https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png" alt="Git Logo" class="git-logo">
-            <h1 class="display-4 fw-bold">Guia de Cabeceira</h1>
-            <p class="lead">Manual de Sobrevivência para Ecossistemas de Alta Criticidade</p>
-            <div class="d-flex justify-content-center gap-3">
-                <span class="badge bg-dark border border-secondary p-2">v1.0.0</span>
-                <span class="badge bg-dark border border-secondary p-2">CI/CD Driven</span>
-                <span class="badge bg-dark border border-secondary p-2">Zero Panic Policy</span>
+            <h1 class="display-5">Resiliência no Ecossistema GitHub Enterprise</h1>
+            <p class="lead text-muted"><strong>Guia de Sobrevivência para Ambientes de Alta Criticidade</strong></p>
+            <div class="no-print">
+                <button onclick="window.print()" class="btn btn-futuristic mt-2">GERAR RELATÓRIO PDF</button>
             </div>
         </div>
     </header>
 
-    <main class="container my-5">
+    <div class="container py-5">
 
-        <!-- Seção Arquitetura -->
-        <section id="arquitetura" class="mb-5">
-            <h2 class="mb-4 text-info"><i class="fas fa-sitemap me-2"></i>Arquitetura de Branches</h2>
+        <section id="introducao">
+            <h2><i class="fas fa-shield-halved me-3"></i>1. Introdução e Objetivos Éticos</h2>
+            <p>Este guia foi desenhado para arquitetos e desenvolvedores que operam em ambientes de alta criticidade. O
+                foco não é apenas o "caminho feliz", mas como o Git nos salva em situações de estresse sob pressão de
+                entrega.</p>
+            <strong>Objetivos de Aprendizado:</strong>
+            <ul>
+                <li>Domínio do ciclo de vida de uma demanda (Clone to Prod).</li>
+                <li>Gestão de conflitos e rollback seletivo (reverter um erro sem perder outras entregas).</li>
+                <li>Rastreabilidade total e governança em ambientes regulados.</li>
+                <li>Padronização de comunicação via Commits e Tags.</li>
+            </ul>
+        </section>
+
+        <section id="esteira">
+            <h2><i class="fas fa-microchip me-3"></i>2. Visão Macro: A Esteira de Validação</h2>
+            <p>Antes de aprofundarmos no Git, precisamos entender os portões de qualidade que protegem a
+                <code>master</code>.
+            </p>
+            <div class="mermaid">
+                flowchart LR
+                A([PR Develop]) --> B{Quality Gates}
+                B -->|Reprovado| F[Correção Dev]
+                B -->|Aprovado| G[GMUD/Audit]
+                G --> H[Aprovação]
+                H --> I[UAT / Smoke]
+                I --> K([Release OK])
+            </div>
+            <strong>Pontos Críticos:</strong>
+            <ul>
+                <li><strong>Static Analysis (Sonar):</strong> Cobertura > 80%, 0 Bugs Críticos.</li>
+                <li><strong>SCA/SAST:</strong> Bloqueio de vulnerabilidades conhecidas.</li>
+                <li><strong>GMUD:</strong> Registro formal para auditoria e conformidade.</li>
+                <li><strong>DSV Rotate Pass:</strong> Validação de segredos e rotação antes do deploy.</li>
+            </ul>
+        </section>
+
+        <section id="arquitetura">
+            <h2><i class="fas fa-sitemap me-3"></i>3. Arquitetura de Branching</h2>
             <div class="table-responsive">
-                <table class="table table-dark table-hover border-secondary">
+                <table class="table table-sm">
                     <thead>
                         <tr>
                             <th>Tipo</th>
                             <th>Prefixo</th>
                             <th>Origem</th>
                             <th>Destino</th>
-                            <th>Finalidade</th>
+                            <th>Finalidade Detalhada</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><span class="status-badge bg-primary">Feature</span></td>
+                            <td><b class="text-white">Feature</b></td>
                             <td><code>feat/</code></td>
                             <td>develop</td>
                             <td>develop</td>
-                            <td>Novas funcionalidades isoladas.</td>
+                            <td>Trabalho diário; isolamento de novas funcionalidades.</td>
                         </tr>
                         <tr>
-                            <td><span class="status-badge bg-warning text-dark">Fix</span></td>
+                            <td><b class="text-white">Fix</b></td>
                             <td><code>fix/</code></td>
                             <td>develop</td>
                             <td>develop</td>
-                            <td>Correção de bugs em desenvolvimento.</td>
+                            <td>Correção de bugs em desenvolvimento/testes.</td>
                         </tr>
                         <tr>
-                            <td><span class="status-badge bg-success">Release</span></td>
+                            <td><b class="text-white">Release</b></td>
                             <td><code>release-</code></td>
                             <td>develop</td>
                             <td>master/dev</td>
-                            <td>Homologação, QA e UAT.</td>
+                            <td>Homologação; "Code Freeze" antes da produção.</td>
                         </tr>
                         <tr>
-                            <td><span class="status-badge bg-danger">Hotfix</span></td>
+                            <td><b class="text-white">Hotfix</b></td>
                             <td><code>hotfix/</code></td>
                             <td>master</td>
                             <td>master/dev</td>
-                            <td>Correção crítica em Produção.</td>
+                            <td>Emergência em Produção (apagar incêndios).</td>
+                        </tr>
+                        <tr>
+                            <td><b class="text-white">Tag</b></td>
+                            <td><code>v*</code></td>
+                            <td>master</td>
+                            <td>-</td>
+                            <td>Snapshot imutável; carimbo final para auditoria.</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+
         </section>
 
-        <!-- Seção Padrões (Accordions) -->
-        <section id="padroes" class="mb-5">
-            <h2 class="mb-4 text-info"><i class="fas fa-code me-2"></i>Semântica e Commits</h2>
-            <div class="accordion" id="accordionPadroes">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCommits">
-                            1. CONVENTIONAL COMMITS & SEMVER
-                        </button>
-                    </h2>
-                    <div id="collapseCommits" class="accordion-collapse collapse" data-bs-parent="#accordionPadroes">
-                        <div class="accordion-body">
-                            <p>Padrão: <code>tipo(escopo): descrição</code></p>
-                            <ul>
-                                <li><strong>feat:</strong> Nova funcionalidade (Gera MINOR)</li>
-                                <li><strong>fix:</strong> Correção de bug (Gera PATCH)</li>
-                                <li><strong>feat(api)!:</strong> Mudança Quebrante (Gera MAJOR)</li>
-                            </ul>
-                            <pre>git commit -m "fix(auth): corrige expiração do JWT (Ref: Card #442)"</pre>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRelease">
-                            2. CICLO DE RELEASE (HOMOLOGAÇÃO)
-                        </button>
-                    </h2>
-                    <div id="collapseRelease" class="accordion-collapse collapse" data-bs-parent="#accordionPadroes">
-                        <div class="accordion-body">
-                            <p>A <strong>Release</strong> é o "Code Freeze".</p>
-                            <ul>
-                                <li><strong>QA:</strong> Validação técnica (Bugs).</li>
-                                <li><strong>UAT:</strong> Validação de negócio (PO).</li>
-                                <li><strong>Back-merge:</strong> Obrigatório após merge na master.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <section id="padroes">
+            <h2><i class="fas fa-code me-3"></i>4. Padronização e Semântica</h2>
+            <p>Padrão: <code>&lt;tipo&gt;(&lt;escopo&gt;): &lt;descrição&gt;</code></p>
+            <ul>
+                <li><strong>feat:</strong> Nova funcionalidade (MINOR).</li>
+                <li><strong>fix:</strong> Correção técnica (PATCH).</li>
+                <li><strong>hotfix:</strong> Correção crítica urgente aplicada diretamente em produção.</li>
+                <li><strong>chore:</strong> Manutenção de bibliotecas, arquivos de configuração ou ferramentas.</li>
+                <li><strong>docs:</strong> Alterações exclusivas em documentação (README, Swagger e Wiki).</li>
+                <li><strong>refactor:</strong> Mudança no código que não altera comportamento nem corrige erro.</li>
+                <li><strong>perf:</strong> Alterações focadas estritamente em ganho de performance.</li>
+                <li><strong>test:</strong> Adição, correção ou refatoração de testes.</li>
+                <li><strong>build:</strong> Mudanças que afetam o sistema de build ou dependências externas.</li>
+                <li><strong>ci:</strong> Mudanças em scripts e configurações de CI/CD (GitHub Actions, etc).</li>
+                <li><strong>! (Breaking Change):</strong> Indica quebra de compatibilidade (MAJOR).</li>
+            </ul>
+
+            <h3>Mudanças Quebrantes (Breaking Changes)</h3>
+            <p>Indicadas com um <code>!</code> após o tipo/escopo. Sinaliza que a mudança quebra a compatibilidade com
+                versões anteriores.</p>
+            <ul>
+                <li><strong>Exemplo:</strong> <code>feat(api)!: altera contrato de resposta do login</code> (Gera um
+                    <strong>MAJOR</strong> no SemVer (Versionamento)).
+                </li>
+            </ul>
+            <p><strong>Dica de Ouro:</strong> Além do <code>!</code>, é recomendado usar o rodapé da mensagem para
+                detalhar a mudança:</p>
+            <pre>git commit -m "feat(api)!: altera contrato de resposta do login
+
+O campo 'token' foi renomeado para 'accessToken' para seguir o padrão OAuth2.
+
+BREAKING CHANGE: Clientes que utilizam o campo 'token' na resposta do login
+precisaram atualizar para 'accessToken'."</pre>
+
+            <h3>O Escopo (Scope)</h3>
+            <p>Indica o módulo ou contexto afetado (ex: <code>auth</code>, <code>ui</code>, <code>billing</code>). Ajuda
+                a filtrar logs e entender rapidamente o raio de impacto da mudança.</p>
+
+            <h3>A Importância do Comentário Estruturado</h3>
+            <p>Um commit bem escrito resolve 50% de um incidente. Ele deve responder: <strong>O que foi feito e por que
+                    foi feito?</strong></p>
+            <p><strong>Corpo e Rodapé (Body & Footer):</strong> Use o corpo da mensagem para explicar o "porquê" técnico
+                e o rodapé para referenciar IDs de tarefas ou fechar Issues automaticamente.</p>
+            <p><strong>Exemplo Ruim:</strong> <code>git commit -m "ajuste bug"</code> (Onde? Por quê?)</p>
+            <p><strong>Exemplo Profissional:</strong></p>
+            <pre>git commit -m "fix(pagamento): corrige arredondamento de centavos no checkout
+
+O arredondamento estava causando divergência de 1 centavo em pagamentos com cartão de crédito.
+A lógica foi ajustada para utilizar BigDecimal com ROUND_HALF_UP.
+
+Ref: Card #442"</pre>
         </section>
 
-        <!-- Seção Panic Room (SOS) -->
-        <section id="panic" class="mb-5">
-            <h2 class="mb-4 text-danger"><i class="fas fa-biohazard me-2"></i>S.O.S - Panic Room</h2>
-            <div class="alert alert-danger bg-dark border-danger text-danger">
-                <i class="fas fa-exclamation-triangle me-2"></i> <strong>SITUAÇÃO DE CRISE:</strong> Mantenha a calma. Analise o impacto antes de agir.
-            </div>
-            <div class="accordion panic-room" id="accordionPanic">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panic1">
-                            ERRO EM PRODUÇÃO (REVERT SELETIVO)
-                        </button>
-                    </h2>
-                    <div id="panic1" class="accordion-collapse collapse" data-bs-parent="#accordionPanic">
-                        <div class="accordion-body">
-                            <p>Cenário: 1 PR entre 5 quebrou o sistema. Não dê rollback total!</p>
-                            <code>git log --merges --oneline</code><br>
-                            <code>git revert -m 1 &lt;HASH_DO_PR&gt;</code><br>
-                            <code>git push origin master --tags</code>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panic2">
-                            INCLUSÃO URGENTE NA RELEASE (CHERRY-PICK)
-                        </button>
-                    </h2>
-                    <div id="panic2" class="accordion-collapse collapse" data-bs-parent="#accordionPanic">
-                        <div class="accordion-body">
-                            <p>Cenário: Precisa de 1 feature da develop na release atual sem levar o resto.</p>
-                            <code>git switch release-X.Y.Z</code><br>
-                            <code>git cherry-pick &lt;HASH_DO_COMMIT&gt;</code><br>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panic3">
-                            REMOÇÃO TOTAL (REVERT EM CASCATA)
-                        </button>
-                    </h2>
-                    <div id="panic3" class="accordion-collapse collapse" data-bs-parent="#accordionPanic">
-                        <div class="accordion-body">
-                            <p>Cenário: A feature e seus fix/hotfix precisam sumir.</p>
-                            <p>Regra LIFO: Reverte do mais novo para o mais antigo.</p>
-                            <code>git revert -m 1 &lt;HOTFIX&gt;</code><br>
-                            <code>git revert -m 1 &lt;FIX&gt;</code><br>
-                            <code>git revert -m 1 &lt;FEATURE&gt;</code><br>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <section id="release">
+            <h2><i class="fas fa-vial-circle-check me-3"></i>5. O Ciclo de Release</h2>
+            <p>A branch de <code>release</code> funciona como a nossa "sala de espera" para a produção. É o ponto de
+                congelamento (<strong>Code Freeze</strong>) onde o código sai do fluxo contínuo de desenvolvimento e
+                entra em um estado de refinamento e validação final.</p>
+
+            <h3>No que a Release ajuda?</h3>
+            <ul>
+                <li><strong>Isolamento de Versão:</strong> Garante que o QA teste uma versão estática. Novas
+                    funcionalidades que entrarem na <code>develop</code> após o corte da release não "contaminam" a
+                    entrega atual.</li>
+                <li><strong>Segurança para o Desenvolvedor:</strong> O time pode continuar trabalhando na próxima Sprint
+                    na <code>develop</code> sem medo de quebrar o que está sendo homologado.</li>
+                <li><strong>Ambiente de Homologação:</strong> A branch de release é o espelho fiel do ambiente de
+                    UAT/QA.</li>
+                <li><strong>Estabilização Técnica:</strong> Permite focar exclusivamente em correções de bugs de última
+                    hora e ajustes finos de configuração sem interferência de novas funcionalidades.</li>
+            </ul>
+
+            <h3>Ciclo de Vida da Release:</h3>
+            <ol>
+                <li><strong>Corte (Branching):</strong> Criada exclusivamente a partir da <code>develop</code> quando o
+                    escopo da versão está pronto (<code>git checkout -b release-1.2.0 develop</code>).</li>
+                <li><strong>Habilitação de Testes:</strong> O pipeline de CI/CD detecta a branch e faz o deploy
+                    automático no ambiente de Homologação (STG/UAT).</li>
+                <li><strong>Correções em Release (Bugfixes):</strong> Se o QA encontrar erros, os ajustes são feitos
+                    <strong>diretamente na branch de release</strong>.
+                </li>
+                <li><strong>Fechamento:</strong> Após aprovação do UAT, a branch é mergeada na <code>master</code> para
+                    deploy e na <code>develop</code> para sincronização.</li>
+            </ol>
+
+            <h3>Regras e Versionamento:</h3>
+            <ul>
+                <li><strong>Sem Novos Merges (Regra Geral):</strong> Em fluxo normal, não se adiciona features em
+                    release. Se o negócio exigir (Exceção), mergeamos a <strong>feature branch</strong> na release,
+                    nunca a <code>develop</code>.</li>
+                <li><strong>Padrão de Nome:</strong> Segue o versionamento semântico (Major.Minor.Patch), ex:
+                    <code>release-1.2.0</code>.
+                </li>
+                <li><strong>Portão de QA:</strong> Ela é a validação final. A aprovação do QA nesta branch é o gatilho
+                    mandatório para o merge na <code>master</code>.</li>
+                <li><strong>Back-merge Obrigatório:</strong> Toda correção (bugfix) realizada na release
+                    <strong>DEVE</strong> ser mergeada de volta para a <code>develop</code> após o deploy em produção,
+                    evitando que o bug "ressuscite" na próxima versão.
+                </li>
+            </ul>
+
+            <blockquote>
+                <strong>Glossário de Homologação:</strong>
+                <ul>
+                    <li><strong>QA (Quality Assurance):</strong> Validação técnica e funcional realizada por
+                        especialistas para garantir que o código não possui bugs e atende aos requisitos.</li>
+                    <li><strong>UAT (User Acceptance Testing):</strong> Validação de negócio realizada pelo usuário
+                        final ou PO para garantir que a solução atende às necessidades reais de uso.</li>
+                </ul>
+            </blockquote>
+
+            <blockquote>
+                <h3 style="color: #12e952;"><strong>Observação Importante:</strong> Desenvolvedor <strong>NÃO</strong> é
+                    tester, nem QA, nem UAT. Por questões de governança e segregação de funções, nesta etapa de release
+                    o desenvolvedor não deve ter acesso ao processo de teste ou à homologação das suas próprias
+                    entregas.
+                </h3>
+            </blockquote>
         </section>
 
-        <!-- Seção Esteira -->
-        <section id="esteira" class="mb-5">
-            <h2 class="mb-4 text-info"><i class="fas fa-microchip me-2"></i>Esteira de Governança</h2>
+        <section id="tags">
+            <h2><i class="fas fa-tags me-3"></i>6. O Poder das Tags</h2>
+            <p>A branch <code>master</code> contém o histórico, mas a <strong>Tag</strong> é o ponto de verdade
+                absoluta.</p>
+
+            <blockquote>
+                <strong>Regra de Ouro:</strong> A tag só é criada quando uma nova versão será gerada ou a cada
+                atualização/merge da branch de release na branch <code>master</code>. <strong>Tags são imutáveis; se a
+                    tag v1.0.0 foi gerada com erro, corrige-se e gera-se a v1.0.1.</strong>
+            </blockquote>
+
+            <h3>Tipos de Tags no Git</h3>
+            <ol>
+                <li><strong>Lightweight (Leve):</strong> Apenas um ponteiro para um commit. Não armazena dados extras.
+                </li>
+                <li><strong>Annotated (Anotada):</strong> Armazena metadados (autor, e-mail, data, mensagem) como um
+                    objeto completo no banco de dados do Git. <strong>Sempre utilize Tags Anotadas para produção e
+                        auditoria.</strong></li>
+            </ol>
+
+            <h3>Guia de Comandos: Criando e Subindo uma Tag</h3>
+            <p>Para que o Arquiteto DevOps tenha rastreabilidade total, siga estes passos na branch <code>master</code>:
+            </p>
+            <pre># 1. Certifique-se de estar na master e sincronizado com o servidor
+git checkout master
+git pull origin master
+
+# 2. Criar a Tag Anotada
+# -a: Nome da tag (ex: v1.0.0)
+# -m: Mensagem explicativa (Fundamental para auditoria e geração de CHANGELOGs)
+git tag -a v1.0.0 -m "Release 1.0.0: Implementação do checkout e correção crítica no login"
+
+# 3. Verificar se a tag foi criada localmente com os metadados
+git tag -n
+
+# 4. Subir a tag para o servidor (O push comum de branch não envia tags por padrão)
+# Este comando geralmente aciona gatilhos (triggers) da esteira de Deploy (CD).
+git push origin v1.0.0</pre>
+
+            <p><strong>Por que usar Tags?</strong></p>
+            <ol>
+                <li><strong>Imutabilidade:</strong> Uma Tag aponta para um commit específico e nunca deve ser alterada.
+                </li>
+                <li><strong>Rollback Ágil:</strong> Se a versão atual quebrar, o DevOps sabe exatamente qual tag
+                    anterior estava estável para fazer o deploy imediato.</li>
+                <li><strong>Auditoria:</strong> Facilita identificar exatamente o que foi para produção na data X.</li>
+                <li><strong>Versionamento Semântico (SemVer):</strong> Permite o controle de versões
+                    (Major.Minor.Patch).
+                    <ul>
+                        <li><strong>MAJOR (X.0.0):</strong> Quebra de compatibilidade. Ex: Alteração de contrato de API,
+                            troca de banco de dados ou remoção de funções.</li>
+                        <li><strong>MINOR (1.X.0):</strong> Novas funcionalidades compatíveis. Ex: Novos endpoints,
+                            novas telas ou melhorias de performance (Refact) sem mudar a interface.</li>
+                        <li><strong>PATCH (1.0.X):</strong> Correções de bugs e segurança. Ex: Ajuste de NullPointer,
+                            correção de CSS ou atualização de bibliotecas vulneráveis (Chore).</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <p><strong>Comandos de Consulta e Rastreabilidade:</strong></p>
+            <pre># 1. Filtrar por MAJOR (Ver todas as entregas da versão 1)
+git tag -l "v1.*"
+
+# 2. Filtrar por MINOR (Ver todos os patches da versão 1.2)
+git tag -l "v1.2.*"
+
+# 3. Rastreabilidade: O que mudou entre uma versão e outra?
+# (Útil para saber o que entrou em um MINOR novo)
+git log v1.1.0..v1.2.0 --oneline
+
+# 4. Auditoria de PATCH: Quais correções foram feitas?
+git log v1.2.0..v1.2.1 --oneline</pre>
+
+            <blockquote>
+                <strong>Nota para Arquitetos:</strong> Durante o desenvolvimento inicial (versões 0.x.x), o SemVer é
+                mais flexível, mas a partir da <code>v1.0.0</code>, a compatibilidade deve ser tratada como lei.
+            </blockquote>
+
+            <h3>Como Auditar uma Tag</h3>
+            <p>Use o comando <code>git show v1.0.0</code> para ver os detalhes de quem criou, quando foi criada e o
+                conteúdo exato do commit tagueado.</p>
+        </section>
+
+        <section id="crise">
+            <h2><i class="fas fa-history me-3"></i>7. Ciclo de Vida: Do Sucesso ao Caos</h2>
+            <p class="mb-5">Acompanhe a saga do <b>PetShop Online</b>. Cada cenário abaixo é uma etapa cronológica na
+                vida do projeto, exigindo manobras técnicas precisas para manter o sistema vivo.</p>
+
+            <div class="scenario-card">
+                <h3>Semana 1: A Estreia - Correção do Login (v0.1.0)</h3>
+                <p><strong>Situação:</strong> O projeto PetShop está decolando. Detectamos que o token de autenticação
+                    expira rápido demais, impedindo as compras.</p>
+                <pre># Criando a branch de trabalho
+git switch develop
+git switch -c fix/auth-token-login
+
+# Commits com padrão Conventional Commits
+git commit -m "fix(auth): corrige expiração do token JWT no login"
+git push origin fix/auth-token-login</pre>
+                <p>Após aprovação do PR, a <code>develop</code> consolida as entregas. Para subir, cortamos a
+                    <code>release-0.1.0</code>.
+                </p>
+            </div>
+
             <div class="mermaid">
                 flowchart LR
-                A[PR] --> B(Build)
-                B --> C(Sonar)
-                C --> D(Security)
-                D --> E{Quality Gate}
-                E -->|Fail| F(Ajuste)
-                E -->|Pass| G(GMUD)
-                G --> H(UAT)
-                H --> I(Deploy PROD)
+                A([develop]) -- "switch -c" --> B[fix/auth] -- "commit" --> C[Fix Apply] -- "PR Merge" --> D([develop])
+                -- "freeze" --> E([release])
+
+                click A "#" "Ponto de partida estável para iniciar a tarefa"
+                click B "#" "Isolamento: Criando branch específica para o bug de autenticação"
+                click C "#" "Aplicação da correção seguindo Conventional Commits"
+                click D "#" "Integração do código após aprovação técnica (Code Review)"
+                click E "#" "Corte da versão v0.1.0 para testes em Homologação/QA"
+            </div>
+
+            <div class="scenario-card">
+                <h3>Semana 2: O Incidente Crítico - OOM em Produção (v0.1.1)</h3>
+                <p><strong>Contexto:</strong> Subimos a versão <code>v0.1.0</code> contendo:</p>
+                <ol>
+                    <li>PR101: <code>fix/auth-token-login</code></li>
+                    <li>PR102: <code>feat/listagem-produtos</code></li>
+                    <li>PR103: <code>chore/jacoco-metrics</code> (O Vilão)</li>
+                </ol>
+                <p><strong>O Problema:</strong> A biblioteca Jacoco (PR103) causou estouro de memória (OOM). O New Relic
+                    está em alerta vermelho.</p>
+                <p><strong>A Decisão:</strong> Não faremos Rollback total (v0.0.9) para não perder a listagem de
+                    produtos (PR102). Usaremos <strong>Revert Seletivo</strong>.</p>
+
+                <h4>Passo 1: Identificar o culpado na linha do tempo</h4>
+                <pre>git log --merges --oneline
+# Saída:
+# a1b2c3d Merge pull request #103 from chore/jacoco-metrics
+# e5f6g7h Merge pull request #102 from feat/listagem-produtos</pre>
+
+                <h4>Passo 2: Executar o Hotfix de Reversão</h4>
+                <pre>git switch master
+git switch -c hotfix/remover-jacoco-oom
+
+# Revertendo o merge específico do PR106
+git revert -m 1 a1b2c3d
+
+# Gerando a tag emergencial v0.1.1
+git tag -a v0.1.1 -m "Hotfix: Estabilização do ambiente - Removendo Jacoco OOM"
+git push origin master --tags</pre>
+                <p><strong>Resultado:</strong> A listagem de produtos continua ativa, mas o código do Jacoco foi
+                    removido cirurgicamente.</p>
+            </div>
+
+            <div class="mermaid">
+                flowchart LR
+                A([v0.1.0 Alert]) -- "new branch" --> B[hotfix/jacoco] -- "revert" --> C[Clean Code] -- "tag" -->
+                D([v0.1.1 OK])
+
+                click A "#" "Produção em Alerta Vermelho: Erro de memória detectado no PR103"
+                click B "#" "Criação de branch emergencial a partir da master para correção rápida"
+                click C "#" "Remoção seletiva do PR103 (Jacoco) sem afetar a listagem de produtos"
+                click D "#" "Versão v0.1.1: Sistema estabilizado e histórico preservado"
+            </div>
+
+            <div class="scenario-card">
+                <h3>Semana 3: Mudança de Escopo - Cupom Urgente (v0.2.0)</h3>
+                <p><strong>Situação:</strong> Estamos preparando a <code>release-0.2.0</code>. O Marketing exige a
+                    inclusão da <code>feat/cupom-voto-bicho</code> agora, mas a <code>develop</code> está "suja" com
+                    outras 5 tarefas de infraestrutura que não podem subir.</p>
+                <p><strong>O Desafio:</strong> Não podemos mergear a <code>develop</code>. Precisamos do
+                    <strong>Cherry-pick</strong>.
+                </p>
+                <pre>git switch release-0.2.0
+# Identificar os hashes dos commits da sua feature
+git log feat/cupom-voto-bicho --oneline
+
+# Exemplo de saída:
+# a1b2c3d feat(cupom): lógica de desconto
+# e5f6g7h feat(cupom): integração com checkout
+
+# Aplicar apenas estes commits na release (do mais antigo para o mais novo)
+git cherry-pick e5f6g7h
+git cherry-pick a1b2c3d
+
+# Resolver conflitos (se houver) e subir
+git push origin release-0.2.0</pre>
+                <p><strong>Impacto:</strong> O ciclo de QA/UAT deve ser reiniciado para garantir que a nova feature não
+                    quebrou as correções que já haviam sido validadas.</p>
+            </div>
+
+            <div class="mermaid">
+                flowchart LR
+                A([feat/cupom]) -- "git log" --> B[Identify Hashes] -- "git cherry-pick" --> C[release-0.0.1] -- "alert"
+                --> D([Restart QA])
+
+                click A "#" "Feature urgente que precisa ser integrada sem levar os outros commits da develop"
+                click B "#" "Mapeamento dos hashes específicos (a1b2c3d, e5f6g7h) para o transplante"
+                click C "#" "Aplicação cirúrgica dos commits selecionados na branch de release"
+                click D "#" "Atenção: A inclusão de código novo anula os testes anteriores; reinicie o ciclo de QA"
+            </div>
+
+            <div class="scenario-card">
+                <h3>Semana 4: Descoberta Tardia - Erro no Carrinho (v0.2.1)</h3>
+                <p><strong>Situação:</strong> Semanas após o deploy da <code>v0.1.0</code>, o Financeiro detecta erro de
+                    arredondamento no <code>feat/cart-checkout</code>.</p>
+                <p><strong>Desafio:</strong> Há dezenas de merges após esse commit. Um <code>reset</code> é impossível.
+                    Usaremos <strong>Revert Seletivo</strong> para "desligar" a feature.</p>
+                <p><strong>Solução Técnica:</strong></p>
+                <pre class="mb-0">git switch master
+git switch -c hotfix/remover-carrinho-bug
+
+# Localizar o merge antigo (PR104)
+git log --merges --grep="feat/cart-checkout"
+
+# Reverter mantendo a integridade da árvore
+git revert -m 1 &lt;HASH_DO_PR104&gt;
+
+git tag -a v0.2.1 -m "Hotfix: Desativação temporária do checkout por erro financeiro"
+git push origin master --tags</pre>
+            </div>
+
+            <div class="mermaid">
+                flowchart LR
+                A([Financial Error]) -- "investigate" --> B[hotfix/cart] -- "git revert" --> C[Feature Removed] --
+                "tag" --> D([v0.2.1 OK])
+
+                click A "#" "Erro de arredondamento crítico detectado pelo Financeiro semanas após o deploy"
+                click B "#" "Criação de branch emergencial para isolar a reversão da funcionalidade"
+                click C "#" "Reversão seletiva do merge PR104 preservando o histórico de outros merges"
+                click D "#" "Versão v0.2.1: Carrinho desativado para evitar maiores prejuízos financeiros"
+            </div>
+
+            <blockquote class="mt-4" style="border-left-color: #ffca28; background: rgba(255, 202, 40, 0.05);">
+                <strong><i class="fas fa-hand-pointer me-2"></i>O Poder do <code>git cherry-pick</code>: A Cirurgia do
+                    Git</strong>
+                <p class="mb-0 mt-2">
+                    O <code>git cherry-pick</code> é a ferramenta de <strong>integração seletiva</strong>. Enquanto o
+                    <code>merge</code> traz todo o histórico de uma branch, o cherry-pick permite que você escolha um
+                    commit específico (pelo seu HASH) e o "transplante" para sua branch atual.
+                    <br><br>
+                    <strong>Importância Técnica:</strong> Ele é vital para o <i>Backporting</i> (levar correções de uma
+                    versão nova para uma antiga) e para salvar entregas quando a branch original está "suja" com códigos
+                    não homologados. Ele garante que a <strong>agilidade</strong> não comprometa a
+                    <strong>estabilidade</strong>.
+                </p>
+            </blockquote>
+
+            <div class="scenario-card">
+                <h3>Semana 5: A Redenção - Reativando o Carrinho (v0.2.2)</h3>
+                <p><strong>Introdução:</strong> O pânico financeiro passou e o time corrigiu o erro. Agora precisamos
+                    "desfazer o desfazer". No Git, a melhor prática é o <strong>Revert do Revert</strong>.</p>
+                <p><strong>O Desafio:</strong> O Git "lembra" que você rejeitou aquelas linhas na v0.2.1. Mergear a
+                    branch antiga agora resultaria em um merge vazio.</p>
+
+                <p><strong>Ação:</strong> Reverter o próprio commit de reversão da semana anterior.</p>
+                <pre>git switch master
+git switch -c hotfix/reativar-carrinho-fix
+
+# 1. Localizar o commit de REVERT feito na Semana 4
+git log --oneline --grep="remover-carrinho-bug"
+
+# 2. Reverter a reversão (isso traz o código original de volta)
+git revert &lt;HASH_DO_REVERT_ANTERIOR&gt;
+
+git tag -a v0.2.2 -m "Feature: Reativando carrinho com correções financeiras"
+git push origin master --tags</pre>
+            </div>
+
+
+            <div class="mermaid">
+                flowchart LR
+                A([Funcionalidade Ativa]) -- "Erro Detectado" --> B[Revert]
+                B --> C([Funcionalidade Removida])
+                C -- "Correção Aplicada" --> D[Revert do Revert]
+                D -- "Produção v0.0.6" --> A
+
+                click A "#" "Estado inicial estável com a funcionalidade integrada à master."
+                click B "#" "Ação cirúrgica para desfazer o merge problemático através de um novo commit."
+                click C "#" "Sistema estabilizado sem o código que causou o incidente financeiro."
+                click D "#" "O 'Revert do Revert' restaura a feature corrigida de forma limpa na v0.2.2."
+            </div>
+
+            <div class="scenario-card">
+                <h3>Semana 6: O Pivot de Negócio - Remoção do Sistema "Pet Match" (v0.3.0)</h3>
+                <p><strong>Introdução:</strong> O PO decidiu abandonar o sistema de "Match" de Pets para focar em
+                    vendas. A funcionalidade <code>feat/pet-match</code> subiu, teve um <code>fix</code> e um
+                    <code>hotfix</code>. Precisamos de uma "Limpeza Profunda".
+                </p>
+                <p><strong>Desafio:</strong> Reverter apenas o início da feature deixaria os "restos" do fix e hotfix,
+                    causando quebras. Usaremos <strong>LIFO (Last In, First Out)</strong>.</p>
+
+                <div class="mermaid">
+                    flowchart LR
+                    A[feat/match] --> B[fix/match] --> C[hotfix/match] --> D[Versões Posteriores...]
+                    D --> E{Remover?}
+                    E --> F[Revert Hotfix] --> G[Revert Fix] --> H[Revert Feature] --> I([v0.3.0 OK])
+
+                    click A "#" "Commit inicial da funcionalidade Pet Match."
+                    click B "#" "Correção realizada na branch de release durante homologação."
+                    click C "#" "Correção urgente de exceção realizada diretamente na master."
+                    click D "#" "O tempo passa e novos commits são empilhados sobre a feature, dificultando um reset
+                    simples."
+                    click E "#" "Decisão estratégica de remoção total para reimplementação do zero."
+                    click F "#" "Início do LIFO: Primeiro revertemos a alteração mais recente (Hotfix)."
+                    click G "#" "Segundo passo: Reversão do fix aplicado durante a homologação."
+                    click H "#" "Terceiro passo: Reversão do commit original que criou a feature."
+                    click I "#" "v0.3.0: Sistema estabilizado e sem resquícios do Pet Match."
+                </div>
+                <p><strong>Ação:</strong> Identificar toda a árvore de dependência da feature e reverter em ordem
+                    reversa (LIFO - Last In, First Out).</p>
+                <pre>git switch master
+git switch -c hotfix/remover-total-cadastro-dog
+
+# 1. Identificar todos os merges relacionados (Feature, Fix, Hotfix)
+git log --merges --oneline --grep="pet-match"
+
+# 2. Reverter na ordem INVERSA (do mais recente para o mais antigo)
+git revert -m 1 &lt;HASH_HOTFIX_EXCEPTION&gt;
+git revert -m 1 &lt;HASH_FIX_RELEASE&gt;
+git revert -m 1 &lt;HASH_FEATURE_ORIGINAL&gt;
+
+git tag -a v0.3.0 -m "hotfix: Remoção completa da feature Pet Match e dependências"
+git push origin master --tags</pre>
             </div>
         </section>
 
-        <!-- Seção Comandos -->
-        <section id="comandos" class="mb-5">
-            <h2 class="mb-4 text-info"><i class="fas fa-terminal me-2"></i>Dicionário de Comandos</h2>
-            <div class="card bg-dark border-secondary">
-                <div class="card-body">
+        <section id="timeline">
+            <h2><i class="fas fa-timeline me-3"></i>8. Linha do Tempo Comparativa</h2>
+            <p>Abaixo, o organograma do que ocorreu no repositório após todos os incidentes. Note a importância
+                estratégica do <strong>Back-merge</strong> para evitar a regressão de bugs:</p>
+            <div class="mermaid">
+                %%{init: { 'gitGraph': {'mainBranchName': 'master'}}}%%
+                gitGraph
+                commit id: "v0.0.1 (Base)"
+                branch develop
+                checkout develop
+                commit id: "fix/03-pagamento"
+                commit id: "chore/01-jacoco"
+
+                branch release-0.0.2
+                checkout release-0.0.2
+                commit id: "fix: QA feedback"
+                checkout master
+                merge release-0.0.2 id: "v0.0.2" tag: "v0.0.2"
+                checkout develop
+                merge release-0.0.2 id: "back-merge-v0.0.2"
+
+                checkout master
+                branch hotfix-revert-jacoco
+                checkout hotfix-revert-jacoco
+                commit id: "REVERT PR106"
+                checkout master
+                merge hotfix-revert-jacoco id: "v0.0.3" tag: "v0.0.3"
+                checkout develop
+                merge master id: "sync-hotfix-v0.0.3"
+
+                checkout develop
+                commit id: "fix/04-jacoco-final"
+                checkout master
+                merge develop id: "v0.0.4" tag: "v0.0.4"
+
+                checkout master
+                branch hotfix-revert-carrinho
+                checkout hotfix-revert-carrinho
+                commit id: "REVERT PR103 (Antigo)"
+                checkout master
+                merge hotfix-revert-carrinho id: "v0.0.5" tag: "v0.0.5"
+                checkout develop
+                merge master id: "sync-hotfix-v0.0.5"
+
+                checkout master
+                branch hotfix-reativar-carrinho
+                checkout hotfix-reativar-carrinho
+                commit id: "REVERT DO REVERT (Carrinho)"
+                checkout master
+                merge hotfix-reativar-carrinho id: "v0.0.6" tag: "v0.0.6"
+                checkout develop
+                merge master id: "sync-hotfix-v0.0.6"
+
+                checkout master
+                branch hotfix-remover-dog
+                checkout hotfix-remover-dog
+                commit id: "REVERT CASCATA (DOG)"
+                checkout master
+                merge hotfix-remover-dog id: "v0.0.7" tag: "v0.0.7"
+                checkout develop
+                merge master id: "sync-hotfix-v0.0.7"
+            </div>
+
+            <div class="mt-5">
+                <h3 class="text-neon-blue mb-4">Análise Detalhada dos Ciclos de Vida</h3>
+
+                <div class="row g-4">
+                    <!-- Etapa 1 -->
+                    <div class="col-md-6">
+                        <div class="scenario-card h-100">
+                            <h4 class="text-white small tech-font"><i class="fas fa-flag-checkered me-2"></i>ESTÁGIO 1:
+                                A BASE ESTÁVEL (v0.0.1)</h4>
+                            <p class="small text-muted mb-2"><strong>O que é:</strong> O ponto zero funcional da
+                                aplicação.</p>
+                            <p class="small"><strong>Ciclo de Vida:</strong> Início da linhagem de produção. Representa
+                                o estado "limpo" antes das manobras complexas.</p>
+                            <p class="small"><strong>Justificativa/Objetivo:</strong> Fornecer um <i>Last Known Good
+                                    Configuration</i> (LKGC). Se tudo falhar adiante, este é o refúgio seguro para o
+                                rollback total.</p>
+                        </div>
+                    </div>
+
+                    <!-- Etapa 2 -->
+                    <div class="col-md-6">
+                        <div class="scenario-card h-100" style="border-left-color: var(--neon-blue);">
+                            <h4 class="text-white small tech-font"><i class="fas fa-hammer me-2"></i>ESTÁGIO 2:
+                                DESENVOLVIMENTO ATÔMICO</h4>
+                            <p class="small text-muted mb-2"><strong>O que é:</strong> Commits <code>fix/03</code> e
+                                <code>chore/01</code> na <code>develop</code>.
+                            </p>
+                            <p class="small"><strong>Ciclo de Vida:</strong> Fase de Construção (Sprint). As tarefas são
+                                isoladas em branches de feature/fix.</p>
+                            <p class="small"><strong>Objetivo:</strong> Manter a integridade da linha principal de
+                                desenvolvimento enquanto as peças do quebra-cabeça são montadas.</p>
+                        </div>
+                    </div>
+
+                    <!-- Etapa 3 -->
+                    <div class="col-md-6">
+                        <div class="scenario-card h-100" style="border-left-color: #12e952;">
+                            <h4 class="text-white small tech-font"><i class="fas fa-vial me-2"></i>ESTÁGIO 3: O FILTRO
+                                DA RELEASE (v0.0.2)</h4>
+                            <p class="small text-muted mb-2"><strong>O que é:</strong> Criação da branch de release,
+                                correção de QA e merge final.</p>
+                            <p class="small"><strong>Ciclo de Vida:</strong> Estabilização (Hardening). O momento onde o
+                                código é "congelado" para testes de stress.</p>
+                            <p class="small"><strong>Ação Crítica (Back-merge):</strong> O merge da release de volta
+                                para a <code>develop</code> garante que as correções do QA não sejam perdidas no futuro.
+                                <b>Sem isso, o erro "ressuscita" na v0.0.3.</b>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Etapa 4 -->
+                    <div class="col-md-6">
+                        <div class="scenario-card h-100" style="border-left-color: #f0ad4e;">
+                            <h4 class="text-white small tech-font"><i class="fas fa-fire-extinguisher me-2"></i>ESTÁGIO
+                                4: GESTÃO DE CRISE (Hotfix v0.0.3)</h4>
+                            <p class="small text-muted mb-2"><strong>O que é:</strong> Reversão cirúrgica do PR
+                                problemático (Jacoco).</p>
+                            <p class="small"><strong>Ciclo de Vida:</strong> Incidente de Produção. Resposta rápida sob
+                                pressão.</p>
+                            <p class="small"><strong>Justificativa:</strong> O <code>revert</code> é preferível ao
+                                <code>reset</code> porque mantém o histórico intacto e permite que o time estude o erro
+                                sem parar a esteira de pagamentos.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Etapa 5 -->
+                    <div class="col-md-6">
+                        <div class="scenario-card h-100" style="border-left-color: #d9534f;">
+                            <h4 class="text-white small tech-font"><i class="fas fa-undo-alt me-2"></i>ESTÁGIO 5:
+                                REVERSÃO ESTRATÉGICA (v0.0.5)</h4>
+                            <p class="small text-muted mb-2"><strong>O que é:</strong> Remoção de feature antiga
+                                (Carrinho) com erro financeiro.</p>
+                            <p class="small"><strong>Ciclo de Vida:</strong> Manutenção de Legado / Contenção de Danos.
+                                Diferente do hotfix, aqui lidamos com um erro que estava latente.</p>
+                            <p class="small"><strong>Objetivo:</strong> Estancar a perda financeira sem desativar o
+                                sistema inteiro, protegendo o fluxo de caixa da empresa.</p>
+                        </div>
+                    </div>
+
+                    <!-- Etapa 6 -->
+                    <div class="col-md-6">
+                        <div class="scenario-card h-100" style="border-left-color: #5bc0de;">
+                            <h4 class="text-white small tech-font"><i class="fas fa-magic me-2"></i>ESTÁGIO 6: A
+                                REDENÇÃO (Revert do Revert v0.0.6)</h4>
+                            <p class="small text-muted mb-2"><strong>O que é:</strong> Reativação da feature após
+                                correção definitiva.</p>
+                            <p class="small"><strong>Ciclo de Vida:</strong> Restauração de Serviço. O momento em que o
+                                código "exilado" retorna ao ecossistema.</p>
+                            <p class="small"><strong>Justificativa Técnica:</strong> Reverter a reversão evita conflitos
+                                complexos de arquivos que o Git consideraria "já deletados" se tentássemos apenas copiar
+                                o código de volta.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-4"
+                    style="background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px dashed var(--neon-blue);">
+                    <h4 class="tech-font text-white mb-3"><i class="fas fa-layer-group me-2"></i>O FLUXO DA TAREFA VS. A
+                        LINHA DO CICLO</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="small"><strong>Linha do Ciclo (Master):</strong> Representa a <b>verdade
+                                    imutável</b> e o valor entregue ao cliente. Cada Tag é uma promessa cumprida de
+                                estabilidade.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="small"><strong>Fluxo da Tarefa (Develop/Features):</strong> Representa o <b>caos
+                                    criativo</b>. É o rascunho onde erros são permitidos, desde que não atravessem o
+                                portão de qualidade da Release.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resumo dos Comandos Utilizados -->
+                <div class="mt-4">
+                    <h5 class="tech-font text-neon-blue small">CAIXA DE FERRAMENTAS DO ARQUITETO (Resumo da Saga):</h5>
                     <div class="table-responsive">
-                        <table class="table table-dark table-sm command-table">
+                        <table class="table table-dark table-hover table-sm mt-2" style="font-size: 0.85rem;">
                             <thead>
                                 <tr>
                                     <th>Comando</th>
-                                    <th>Para que serve?</th>
-                                    <th>Por que usar?</th>
+                                    <th>Quando Usar?</th>
+                                    <th>Impacto no Grafo</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><code>git fetch origin</code></td>
-                                    <td>Atualiza referências</td>
-                                    <td>Ver o que mudou sem alterar seu código.</td>
+                                    <td><code>git revert -m 1</code></td>
+                                    <td>Desfazer um merge específico em produção.</td>
+                                    <td>Cria um novo commit de "oposto", preservando a história.</td>
                                 </tr>
                                 <tr>
-                                    <td><code>git switch -c branch</code></td>
-                                    <td>Cria/Troca branch</td>
-                                    <td>Comando moderno, mais seguro que checkout.</td>
+                                    <td><code>git cherry-pick</code></td>
+                                    <td>Trazer uma feature urgente sem levar a develop inteira.</td>
+                                    <td>Duplica o commit em uma nova linhagem, mudando o Hash original.</td>
                                 </tr>
                                 <tr>
-                                    <td><code>git stash push -m "msg"</code></td>
-                                    <td>Salva progresso temporário</td>
-                                    <td>Trocar de contexto rápido para um hotfix.</td>
+                                    <td><code>git tag -a</code></td>
+                                    <td>Marcar uma versão de auditoria.</td>
+                                    <td>Cria um marco imutável (carimbo) que não se move com novos commits.</td>
                                 </tr>
                                 <tr>
-                                    <td><code>git bisect</code></td>
-                                    <td>Busca binária de bugs</td>
-                                    <td>Achar exatamente qual commit quebrou o sistema.</td>
-                                </tr>
-                                <tr>
-                                    <td><code>git log --oneline --graph</code></td>
-                                    <td>Visão da árvore</td>
-                                    <td>Entender onde estão os forks e merges.</td>
-                                </tr>
-                                <tr>
-                                    <td><code>git show v1.0.0</code></td>
-                                    <td>Audita Tag</td>
-                                    <td>Ver quem criou e o conteúdo da versão.</td>
+                                    <td><code>LIFO Revert</code></td>
+                                    <td>Remover feature com dependências (Cascata).</td>
+                                    <td>Garante que o código seja "desconstruído" na ordem inversa que foi montado.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -415,52 +997,188 @@
             </div>
         </section>
 
-        <!-- Seção Linha do Tempo Visual -->
-        <section class="mb-5">
-            <h2 class="mb-4 text-info"><i class="fas fa-history me-2"></i>Fluxograma do Workshop</h2>
-            <div class="mermaid">
-                %%{init: { 'gitGraph': {'mainBranchName': 'master'}}}%%
-                gitGraph
-                commit id: "v0.0.1"
-                branch develop
-                checkout develop
-                commit id: "fix/03-pagamento"
-                commit id: "chore/01-jacoco"
-                branch release-0.0.2
-                checkout release-0.0.2
-                commit id: "fix: QA"
-                checkout master
-                merge release-0.0.2 id: "v0.0.2" tag: "v0.0.2"
-                checkout develop
-                merge release-0.0.2
-                checkout master
-                branch hotfix-revert-jacoco
-                checkout hotfix-revert-jacoco
-                commit id: "REVERT JACOCO"
-                checkout master
-                merge hotfix-revert-jacoco tag: "v0.0.3"
+        <section id="checklist">
+            <h2><i class="fas fa-clipboard-list me-3"></i>9. Checklist para o Tech Lead</h2>
+            <ol>
+                <li><strong>Nunca use <code>git push --force</code> na master:</strong> Utilize <code>git revert</code>
+                    para manter o histórico e a rastreabilidade de quem aprovou o quê.</li>
+                <li><strong>Pull Requests Atômicos:</strong> PRs pequenos facilitam o rollback seletivo. PRs gigantes
+                    tornam o <code>revert</code> um pesadelo de conflitos.</li>
+                <li><strong>Tags são Imutáveis:</strong> Uma vez criada a tag <code>v0.0.1</code>, ela nunca deve ser
+                    movida. Errou? Crie a <code>v0.0.2</code>.</li>
+                <li><strong>Rastreabilidade:</strong> Todo commit de revert deve mencionar o ID do incidente ou o número
+                    do PR original.</li>
+                <li><strong>Sincronização de Hotfixes (Back-merge):</strong> Sempre que um <code>hotfix</code> for
+                    mergeado na <code>master</code>, ele deve ser mergeado de volta na <code>develop</code>
+                    imediatamente. Se não fizer isso, o erro corrigido voltará na próxima release (regressão de bug).
+                </li>
+                <li><strong>Proteção de Branches:</strong> Utilize as <em>Branch Protection Rules</em> do GitHub. Force
+                    a exigência de revisores (Code Review) e bloqueie merges se o pipeline de CI estiver falhando.</li>
+                <li><strong>Segurança e Segredos:</strong> Ative o <em>Secret Scanning</em>. Jamais permita que chaves
+                    de API, senhas ou tokens sejam commitados, mesmo em ambientes de desenvolvimento.</li>
+                <li><strong>Resolução de Conflitos:</strong> A responsabilidade de resolver conflitos e garantir que o
+                    merge não quebrou nada é do <strong>autor do Pull Request</strong>, não do revisor ou do Tech Lead.
+                </li>
+                <li><strong>Pipeline é Lei:</strong> Nunca ignore um sinal vermelho no Sonar ou falha em testes
+                    unitários. O bypass da esteira é um risco técnico que deve ser evitado ao máximo e documentado
+                    quando inevitável.</li>
+            </ol>
+        </section>
+
+        <section id="comandos">
+            <h2><i class="fas fa-terminal me-3"></i>9.5. Terminal de Comando: Ciclo de Vida</h2>
+            <p>Resumo dos comandos fundamentais para operar a arquitetura de resiliência e manter a integridade do ciclo
+                de vida.</p>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="scenario-card h-100" style="border-left-color: var(--neon-blue);">
+                        <h4 class="text-white small tech-font"><i class="fas fa-code-branch me-2"></i>Navegação e
+                            Trabalho</h4>
+                        <pre style="font-size: 10px;"># Criar e mudar para nova branch (feat/fix)
+git switch -c [prefixo]/[id-tarefa]
+
+# Mudar para branch existente
+git switch [nome-branch]
+
+# Adicionar mudanças ao palco (Stage)
+git add .
+
+# Commit seguindo padrão semântico
+git commit -m "tipo(escopo): descrição"</pre>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="scenario-card h-100" style="border-left-color: #12e952;">
+                        <h4 class="text-white small tech-font"><i class="fas fa-sync me-2"></i>Sincronização e Fluxo
+                        </h4>
+                        <pre style="font-size: 10px;"># Atualizar referências sem baixar arquivos
+git fetch origin
+
+# Baixar e aplicar mudanças
+git pull origin develop
+
+# Subir alterações e criar rastro remoto
+git push -u origin [nome-branch]
+
+# Mesclar código (Integração)
+git merge [nome-branch]</pre>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="scenario-card h-100" style="border-left-color: #f0ad4e;">
+                        <h4 class="text-white small tech-font"><i class="fas fa-tools me-2"></i>Gestão de Crise e
+                            Correção</h4>
+                        <pre style="font-size: 10px;"># Reverter um merge (m1 = linhagem principal)
+git revert -m 1 [hash-merge]
+
+# Aplicar commit cirúrgico (Cherry-pick)
+git cherry-pick [hash-commit]
+
+# Descartar alterações locais não salvas
+git restore [arquivo]
+
+# Visualizar grafo de commits
+git log --oneline --graph --all</pre>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="scenario-card h-100" style="border-left-color: #5bc0de;">
+                        <h4 class="text-white small tech-font"><i class="fas fa-tag me-2"></i>Snapshot e Entrega</h4>
+                        <pre style="font-size: 10px;"># Criar Tag Anotada (Snapshots de Prod)
+git tag -a v1.0.0 -m "Descrição da versão"
+
+# Enviar tags para o GitHub Enterprise
+git push origin --tags
+
+# Listar tags com filtro de versão
+git tag -l "v1.2.*"
+
+# Auditar detalhes de uma versão
+git show v1.0.0</pre>
+                    </div>
+                </div>
             </div>
         </section>
 
-    </main>
+        <section id="seguranca">
+            <h2><i class="fas fa-vault me-3"></i>10. Segurança e Governança</h2>
 
-    <footer class="footer">
-        <div class="container">
-            <p class="mb-3"><i class="fas fa-shield-alt text-success me-2"></i>Ambiente Seguro e Protegido</p>
-            <p class="text-secondary">Este guia é a sua bússola. Em caso de desastre, respire, tome um café e siga o processo. Sua sanidade mental agradece.</p>
-            <hr class="border-secondary my-4">
-            <p class="fw-bold text-light">Assinado: <strong>Saulo Costa</strong> </p>
-            <p class="small">"Menos café por sobrevivência, mais café por prazer. Boas prosas e código limpo."</p>
-        </div>
-    </footer>
+            <h3>10.1 Branch Protection Rules (As Grades de Proteção)</h3>
+            <p>Não confiamos apenas na boa vontade; configuramos travas técnicas. No GitHub Enterprise, as seguintes
+                regras são mandatórias para <code>master</code> e <code>develop</code>:</p>
+            <ul>
+                <li><strong>Require a pull request before merging:</strong> Ninguém sobe código direto. O código deve
+                    passar por um PR.
+                    <ul>
+                        <li><i>Dica de Ouro:</i> Ative "Require approvals" (mínimo de 1 ou 2 revisores).</li>
+                    </ul>
+                </li>
+                <li><strong>Require status checks to pass:</strong> O botão de Merge só fica verde se o pipeline de CI
+                    (Build + Testes + Sonar) retornar sucesso. Se a esteira quebrou, o código não entra.</li>
+                <li><strong>Restrict force pushes:</strong> Impede que alguém use o famigerado
+                    <code>git push --force</code>, que poderia apagar o histórico de produção ou sobrescrever entregas
+                    de colegas.
+                </li>
+                <li><strong>Require signed commits:</strong> Garante que o autor do commit é realmente quem ele diz ser,
+                    verificando chaves GPG/SSH.</li>
+                <li><strong>Include administrators:</strong> Garante que nem mesmo os Tech Leads ou Admins consigam
+                    "pular" as regras em um momento de pressa, a menos que haja uma emergência real documentada.</li>
+            </ul>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <h3>10.2 Secret Scanning (O Detector de Minas)</h3>
+            <p>Um dos maiores riscos em ambientes corporativos é o vazamento de credenciais. O Secret Scanning monitora
+                o repositório em busca de chaves de API, senhas e tokens.</p>
+            <p>Existem dois níveis de proteção:</p>
+            <ol>
+                <li><strong>Scanning de Histórico:</strong> O GitHub varre todos os commits antigos em busca de segredos
+                    já expostos. Se encontrar, o alerta é gerado imediatamente para revogação da chave.</li>
+                <li><strong>Push Protection (O mais importante):</strong> Quando um desenvolvedor tenta dar um
+                    <code>git push</code> com uma chave de AWS, Azure ou uma Connection String de banco de dados no
+                    código, o GitHub <strong>bloqueia o push no ato</strong>.
+                    <ul>
+                        <li><strong>Mensagem de Erro:</strong> O desenvolvedor recebe um alerta no terminal explicando
+                            que um segredo foi detectado e o push é rejeitado até que o segredo seja removido do
+                            histórico do commit.</li>
+                    </ul>
+                </li>
+            </ol>
+            <p><strong>Por que isso é vital?</strong> Um token de acesso vazado na <code>master</code> pode dar a um
+                invasor acesso total à sua infraestrutura em nuvem em segundos. O Secret Scanning é a sua linha de
+                defesa contra o "esquecimento" de um <code>config.json</code> ou <code>.env</code> dentro do commit.</p>
+        </section>
+
+        <footer class="mt-5 text-center border-top pt-5 pb-5">
+            <p class="text-white-50 tech-font small">MANTENHA A CALMA E NÃO ANUNCIE SUA APOSENTADORIA AINDA. ☕</p>
+            <p class="mb-0">Assinado: <strong class="text-white">Saulo Costa</strong></p>
+            <small class="text-muted">Guia de Sobrevivência Git - v1.0.0</small>
+        </footer>
+    </div>
+
     <script>
         mermaid.initialize({
             theme: 'dark',
             startOnLoad: true,
-            securityLevel: 'loose'
+            securityLevel: 'loose',
+            gitGraph: {
+                mainBranchName: 'master',
+                showCommitLabel: true
+            },
+            themeVariables: {
+                fontFamily: '"Fira Code", monospace',
+                commitLabelFontSize: '14px',
+                primaryColor: '#1e293b',
+                primaryTextColor: '#f8fafc',
+                primaryBorderColor: '#58a6ff',
+                lineColor: '#f05032',
+                secondaryColor: '#334155',
+                tertiaryColor: '#475569'
+            }
         });
     </script>
 </body>
+
 </html>
